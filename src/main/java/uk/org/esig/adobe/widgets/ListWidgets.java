@@ -16,23 +16,30 @@ import org.apache.commons.csv.CSVFormat;
 import java.util.List;
 
 public class ListWidgets {
-    private static final String API_HOST = "https://api.adobesign.com/";
     private static final String API_PATH = "api/rest/v6";
+    private static final String API_URL = "https://api.adobesign.com/";
     private static final String API_USER_PREFIX = "email:";
     private static final String BEARER = "Bearer ";
     private static final int PAGE_SIZE = 1000;
+    private static final String SANDBOX = "--sandbox";
+    private static final String SANDBOX_API_URL = "https://api.adobesignsandbox.com/";
     private static final int TIMEOUT = 300000;
     private static final String USAGE = "Usage: java -jar aas-list-templates-<version>.jar <integrationKey>";
 
     public static void main(String[] args) {
-        if (args.length != 1) {
+        if (args.length < 1 || args.length > 2) {
             System.out.println(getUsage());
         }
         else {
             String accessToken = BEARER + args[0];
             ListWidgets list = new ListWidgets();
             try {
-                list.execute(accessToken);
+                if (args.length == 2 && args[1] != null && args[1].equalsIgnoreCase(SANDBOX)) {
+                    list.execute(SANDBOX_API_URL, accessToken);
+                }
+                else {
+                    list.execute(API_URL, accessToken);
+                }
             }
             catch (ApiException ae) {
                 System.out.println(getExceptionDetails(ae));
@@ -41,12 +48,12 @@ public class ListWidgets {
         }
     }
 
-    public void execute(String accessToken) throws ApiException {
+    public void execute(String apiUrl, String accessToken) throws ApiException {
         /*
          *  Establish connection to Adobe Sign API, and obtain the correct API Access Point for the account
          */
         ApiClient apiClient = new ApiClient();
-        apiClient.setBasePath(API_HOST + API_PATH);
+        apiClient.setBasePath(apiUrl + API_PATH);
         apiClient.setConnectTimeout(TIMEOUT).setReadTimeout(TIMEOUT);
         BaseUrisApi baseUrisApi = new BaseUrisApi(apiClient);
         BaseUriInfo baseUriInfo = baseUrisApi.getBaseUris(accessToken);
