@@ -6,10 +6,10 @@
 
     <groupId>uk.org.esig</groupId>
     <artifactId>aas-list-webforms</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
-    <name>Adobe Acrobat List Webforms</name>
-    <description>This utility provides the ability to list all of the webforms, and their owners, within a single Acrobat Sign account</description>
+    <name>Adobe Acrobat List Web Forms</name>
+    <description>This utility provides the ability to list all the web forms, and their owners, within a single Acrobat Sign account</description>
 
     <build>
         <plugins>
