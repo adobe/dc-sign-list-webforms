@@ -16,6 +16,7 @@ import io.swagger.client.model.widgets.UserWidget;
 import io.swagger.client.model.widgets.UserWidgets;
 import org.apache.commons.csv.CSVFormat;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,32 +111,34 @@ public class ListWidgets {
                 DetailedUserInfo detail = usersApi.getUserDetail(accessToken, userInfo.getId(), null);
                 if (detail != null && detail.getStatus().equals(DetailedUserInfo.StatusEnum.ACTIVE)) {
                     String email = userInfo.getEmail();
-                    String apiUser = API_USER_PREFIX + email;
-                    UserWidgets widgets = widgetsApi.getWidgets(accessToken,
-                                                                apiUser,
-                                                                null,
-                                                                Boolean.FALSE,
-                                                                null,
-                                                                PAGE_SIZE);
-                    List<UserWidget> widgetList = widgets.getUserWidgetList();
-                    while (widgetList != null && !widgetList.isEmpty()) {
-                        for (UserWidget widget : widgetList) {
-                            System.out.println(format(widget.getId(),
-                                                      widget.getName(),
-                                                      email,
-                                                      foundGroups.get(widget.getGroupId())));
-                        }
-                        String widgetCursor = widgets.getPage().getNextCursor();
-                        if (widgetCursor != null && !widgetCursor.isEmpty()) {
-                            widgets = widgetsApi.getWidgets(accessToken,
-                                                            apiUser,
-                                                            null,
-                                                            Boolean.FALSE,
-                                                            widgetCursor,
-                                                            PAGE_SIZE);
-                            widgetList = widgets.getUserWidgetList();
-                        } else {
-                            widgetList = null;
+                    if (StandardCharsets.US_ASCII.newEncoder().canEncode(email)) {
+                        String apiUser = API_USER_PREFIX + email;
+                        UserWidgets widgets = widgetsApi.getWidgets(accessToken,
+                                apiUser,
+                                null,
+                                Boolean.FALSE,
+                                null,
+                                PAGE_SIZE);
+                        List<UserWidget> widgetList = widgets.getUserWidgetList();
+                        while (widgetList != null && !widgetList.isEmpty()) {
+                            for (UserWidget widget : widgetList) {
+                                System.out.println(format(widget.getId(),
+                                        widget.getName(),
+                                        email,
+                                        foundGroups.get(widget.getGroupId())));
+                            }
+                            String widgetCursor = widgets.getPage().getNextCursor();
+                            if (widgetCursor != null && !widgetCursor.isEmpty()) {
+                                widgets = widgetsApi.getWidgets(accessToken,
+                                        apiUser,
+                                        null,
+                                        Boolean.FALSE,
+                                        widgetCursor,
+                                        PAGE_SIZE);
+                                widgetList = widgets.getUserWidgetList();
+                            } else {
+                                widgetList = null;
+                            }
                         }
                     }
                 }
