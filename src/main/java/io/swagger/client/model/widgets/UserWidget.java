@@ -1,3 +1,23 @@
+/************************************************************************
+ *
+ * ADOBE CONFIDENTIAL
+ * ___________________
+ *
+ * Copyright 2023 Adobe
+ * All Rights Reserved.
+ *
+ * NOTICE: All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+
+ *************************************************************************
+ */
+
 package io.swagger.client.model.widgets;
 
 import java.util.Objects;
@@ -263,8 +283,8 @@ public class UserWidget {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class UserWidget {\n");
-
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
+        sb.append("    groupId: ").append(toIndentedString(groupId)).append("\n");
         sb.append("    hidden: ").append(toIndentedString(hidden)).append("\n");
         sb.append("    javascript: ").append(toIndentedString(javascript)).append("\n");
         sb.append("    modifiedDate: ").append(toIndentedString(modifiedDate)).append("\n");

@@ -1,3 +1,23 @@
+/************************************************************************
+ *
+ * ADOBE CONFIDENTIAL
+ * ___________________
+ *
+ * Copyright 2023 Adobe
+ * All Rights Reserved.
+ *
+ * NOTICE: All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+
+ *************************************************************************
+ */
+
 package uk.org.esig.adobe.widgets;
 
 import io.swagger.client.api.BaseUrisApi;
@@ -16,6 +36,7 @@ import io.swagger.client.model.widgets.UserWidget;
 import io.swagger.client.model.widgets.UserWidgets;
 import org.apache.commons.csv.CSVFormat;
 
+import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +46,14 @@ public class ListWidgets {
     private static final String API_PATH = "api/rest/v6";
     private static final String API_URL = "https://api.adobesign.com/";
     private static final String API_USER_PREFIX = "email:";
+    private static final CharsetEncoder ASCII_ENCODER = StandardCharsets.US_ASCII.newEncoder();
     private static final String BEARER = "Bearer ";
     private static final int CAPACITY = 20000;
     private static final int PAGE_SIZE = 1000;
     private static final String SANDBOX = "--sandbox";
     private static final String SANDBOX_API_URL = "https://api.adobesignsandbox.com/";
     private static final int TIMEOUT = 300000;
-    private static final String USAGE = "Usage: java -jar aas-list-templates-<version>.jar <integrationKey>";
+    private static final String USAGE = "Usage: java -jar dc-sign-list-templates-<version>.jar <integrationKey>";
 
     public static void main(String[] args) {
         if (args.length < 1 || args.length > 2) {
@@ -111,30 +133,30 @@ public class ListWidgets {
                 DetailedUserInfo detail = usersApi.getUserDetail(accessToken, userInfo.getId(), null);
                 if (detail != null && detail.getStatus().equals(DetailedUserInfo.StatusEnum.ACTIVE)) {
                     String email = userInfo.getEmail();
-                    if (StandardCharsets.US_ASCII.newEncoder().canEncode(email)) {
+                    if (ASCII_ENCODER.canEncode(email)) {
                         String apiUser = API_USER_PREFIX + email;
                         UserWidgets widgets = widgetsApi.getWidgets(accessToken,
-                                apiUser,
-                                null,
-                                Boolean.FALSE,
-                                null,
-                                PAGE_SIZE);
+                                                                    apiUser,
+                                                                    null,
+                                                                    Boolean.FALSE,
+                                                                    null,
+                                                                    PAGE_SIZE);
                         List<UserWidget> widgetList = widgets.getUserWidgetList();
                         while (widgetList != null && !widgetList.isEmpty()) {
                             for (UserWidget widget : widgetList) {
                                 System.out.println(format(widget.getId(),
-                                        widget.getName(),
-                                        email,
-                                        foundGroups.get(widget.getGroupId())));
+                                                          widget.getName(),
+                                                          email,
+                                                          foundGroups.get(widget.getGroupId())));
                             }
                             String widgetCursor = widgets.getPage().getNextCursor();
                             if (widgetCursor != null && !widgetCursor.isEmpty()) {
                                 widgets = widgetsApi.getWidgets(accessToken,
-                                        apiUser,
-                                        null,
-                                        Boolean.FALSE,
-                                        widgetCursor,
-                                        PAGE_SIZE);
+                                                                apiUser,
+                                                                null,
+                                                                Boolean.FALSE,
+                                                                widgetCursor,
+                                                                PAGE_SIZE);
                                 widgetList = widgets.getUserWidgetList();
                             } else {
                                 widgetList = null;

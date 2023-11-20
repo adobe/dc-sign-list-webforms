@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.org.esig</groupId>
-    <artifactId>aas-list-webforms</artifactId>
-    <version>1.2.0</version>
+    <artifactId>dc-sign-list-webforms</artifactId>
+    <version>2.0.0</version>
 
-    <name>Adobe Acrobat List Web Forms</name>
-    <description>This utility provides the ability to list all the web forms, and their owners, within a single Acrobat Sign account</description>
+    <name>Acrobat Sign List Web Forms</name>
+    <description>This utility provides the ability to list all the web forms, and their owners, within an Acrobat Sign account</description>
 
     <build>
         <plugins>
